@@ -1,4 +1,6 @@
 package rest_api;
 
-public class CarController {
+import interfaces.Base_Api;
+
+public class CarController implements Base_Api {
 }
