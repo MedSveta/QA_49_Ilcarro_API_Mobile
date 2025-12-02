@@ -52,4 +52,48 @@ public class RegistrationTestsRest extends AuthenticationController {
                 .contains("a well-formed email address"), "validate Message");
         softAssert.assertAll();
     }
+
+
+    //AAaaaaa$; aesrw123#; ASWER123&; AAa 123!; Горп123!; "        "; Aaa123!; >15 char; AAaa123%;
+    @Test
+    public void registrationNegativeTest_WrongPassword() {
+        int i = new Random().nextInt(1000);
+        RegistrationBodyDto user = RegistrationBodyDto.builder()
+                .username("poly_polina" + i + "@gmail.com")
+                .password("AAaa1234")
+                .firstName("Poly")
+                .lastName("Polina")
+                .build();
+        Response response = registrationLogin(user, REGISTRATION_URL);
+        System.out.println(response.getBody().print());
+        softAssert.assertEquals(response.getStatusCode(), 400,
+                "validate statusCode");
+        ErrorMessageDto errorMessageDto = response.getBody().as(ErrorMessageDto.class);
+        softAssert.assertEquals(errorMessageDto.getError(), "Bad Request", "validate ErrorName");
+        softAssert.assertTrue(errorMessageDto.getMessage().toString()
+                .contains("Must contain at least 1 uppercase letter, 1 lowercase letter"),
+                "validate error message" );
+        softAssert.assertAll();
+    }
+
+    @Test
+    public void registrationNegativeTest_EmptyField() {
+        int i = new Random().nextInt(1000);
+        RegistrationBodyDto user = RegistrationBodyDto.builder()
+                .username("poly_polina" + i + "@gmail.com")
+                .password("AAaa123!")
+                .firstName("")
+                .lastName("Polina")
+                .build();
+        Response response = registrationLogin(user, REGISTRATION_URL);
+        System.out.println(response.getBody().print());
+        softAssert.assertEquals(response.getStatusCode(), 400,
+                "validate statusCode");
+        ErrorMessageDto errorMessageDto = response.getBody().as(ErrorMessageDto.class);
+        softAssert.assertEquals(errorMessageDto.getError(), "Bad Request", "validate ErrorName");
+        softAssert.assertTrue(errorMessageDto.getMessage().toString()
+                        .contains("must not be blank"),
+                "validate error message" );
+        softAssert.assertAll();
+    }
 }
