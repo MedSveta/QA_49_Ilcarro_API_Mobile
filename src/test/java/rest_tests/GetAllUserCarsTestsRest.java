@@ -2,6 +2,7 @@ package rest_tests;
 
 import dto.CarsDto;
 import io.restassured.response.Response;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import rest_api.CarController;
@@ -20,4 +21,12 @@ public class GetAllUserCarsTestsRest extends CarController {
                 "validate city");
         softAssert.assertAll();
     }
+
+    @Test
+    public void getAllUserCarsNegativeTest_WrongUrl(){
+        Response response = getAllUserCars_WrongUrl(LOGIN_URL);
+        System.out.println(response.getStatusCode());
+        Assert.assertEquals(response.getStatusCode(), 403);
+    }
+
 }
